@@ -6,3 +6,29 @@ node_modules
 dist
 pnpm-lock.yaml
 #builtin-providers.json
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dll
+*.exe
+*.pdb
+
+# IDE
+.idea/
+.vs/
+*.swp
+*~
+
+# Build
+publish/
+*.nupkg
+
+# Logs
+*.log
+backend-dotnet/data/
+*.db
