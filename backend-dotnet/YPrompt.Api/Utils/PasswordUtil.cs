@@ -56,23 +56,32 @@ public class PasswordUtil : IPasswordUtil
     public string GenerateRandomPassword(int length = 12)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        var random = new Random();
+        using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
         var password = new char[length];
+        var bytes = new byte[length];
+        rng.GetBytes(bytes);
 
         for (int i = 0; i < length; i++)
         {
-            password[i] = chars[random.Next(chars.Length)];
+            password[i] = chars[bytes[i] % chars.Length];
         }
 
         // Ensure at least one digit and one letter
-        var result = new string(password);
-        if (!result.Any(char.IsDigit))
+        var hasDigit = password.Any(char.IsDigit);
+        var hasLetter = password.Any(char.IsLetter);
+        
+        if (!hasDigit || !hasLetter)
         {
-            password[length - 1] = "0123456789"[random.Next(10)];
-        }
-        if (!result.Any(char.IsLetter))
-        {
-            password[length - 2] = chars[random.Next(52)]; // Only letters
+            // Regenerate with guaranteed requirements
+            rng.GetBytes(bytes);
+            if (!hasDigit)
+            {
+                password[length - 1] = "0123456789"[bytes[0] % 10];
+            }
+            if (!hasLetter)
+            {
+                password[length - 2] = chars[bytes[1] % 52]; // Only letters
+            }
         }
 
         return new string(password);

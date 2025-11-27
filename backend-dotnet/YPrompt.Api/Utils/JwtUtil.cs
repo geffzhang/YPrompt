@@ -21,12 +21,13 @@ public class JwtUtil : IJwtUtil
 
     public JwtUtil(IConfiguration configuration, ILogger<JwtUtil> logger)
     {
-        _secretKey = configuration["Jwt:SecretKey"] ?? "your-secret-key-change-in-production";
+        _secretKey = configuration["Jwt:SecretKey"] 
+            ?? throw new InvalidOperationException("JWT SecretKey is not configured. Please set 'Jwt:SecretKey' in appsettings.json or environment variable 'SECRET_KEY'.");
         _logger = logger;
-
-        if (_secretKey == "your-secret-key-change-in-production")
+        
+        if (_secretKey.Length < 32)
         {
-            _logger.LogWarning("⚠️  警告: 使用默认SECRET_KEY,生产环境请务必修改配置!");
+            throw new InvalidOperationException("JWT SecretKey must be at least 32 characters long for security.");
         }
     }
 

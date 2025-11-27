@@ -75,7 +75,7 @@ Configuration can be set via `appsettings.json` or environment variables:
 
 | Setting | Environment Variable | Default | Description |
 |---------|---------------------|---------|-------------|
-| `Jwt:SecretKey` | `SECRET_KEY` | - | JWT signing key (required) |
+| `Jwt:SecretKey` | `SECRET_KEY` | - | JWT signing key (**required**, min 32 chars) |
 | `Database:Type` | `DB_TYPE` | `sqlite` | Database type: `sqlite` or `mysql` |
 | `ConnectionStrings:Sqlite` | `SQLITE_DB_PATH` | `../data/yprompt.db` | SQLite database path |
 | `LinuxDo:ClientId` | `LINUX_DO_CLIENT_ID` | - | Linux.do OAuth client ID |
@@ -182,8 +182,15 @@ For production, set these environment variables:
 export SECRET_KEY="your-secure-secret-key-at-least-32-characters"
 export DB_TYPE="sqlite"
 export ADMIN_USERNAME="admin"
-export ADMIN_PASSWORD="your-secure-password"
+export ADMIN_PASSWORD="YourSecurePassword123!"
 ```
+
+## Security Notes
+
+1. **JWT Secret Key**: Must be at least 32 characters. The application will throw an exception if not configured.
+2. **Admin Password**: Change the default password immediately after deployment.
+3. **Password Hashing**: Uses BCrypt with work factor 12 for secure password storage.
+4. **Random Password Generation**: Uses cryptographically secure random number generator.
 
 ## License
 
